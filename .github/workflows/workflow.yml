@@ -11,7 +11,7 @@ on:
 jobs:
     lint_test_deploy:
         runs-on: ubuntu-latest
-        name: Lint and Checkout
+        name: Lint, Checkout and Unit Tests
 
         steps:
           - name: Checkout code 
@@ -22,5 +22,7 @@ jobs:
           
           - name: Lint with Flake8
             run: flake8 .
+          - name: Run unit tests
+            run: nosetests
 
 
