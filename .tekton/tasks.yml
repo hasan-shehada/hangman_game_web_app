@@ -1,15 +1,19 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: cleanup-task
+  name: cleanup-and-test-task
 spec:
   params:
     - name: directory
       type: string
       description: The directory to clean up
       default: "/tmp"
+    - name: test_directory
+      type: string
+      description: The directory containing test files
+      default: "/tests"
   workspaces:
-    - name: workspace
+    - name: source
   steps:
     - name: cleanup
       image: alpine:3.14
@@ -20,5 +24,18 @@ spec:
         - |
           rm -rf $(params.directory)/*
       volumeMounts:
-        - name: workspace
+        - name: source
           mountPath: $(params.directory)
+
+    - name: run-tests
+      image: python:3.9
+      command:
+        - sh
+        - -c
+      args:
+        - |
+          pip install -r $(workspaces.source.path)/requirements.txt
+          nosetests $(params.test_directory)
+      volumeMounts:
+        - name: source
+          mountPath: /source
