@@ -9,7 +9,7 @@ spec:
       description: The directory to clean up
       default: "/tmp"
   workspaces:
-    - name: source
+    - name: workspace
   steps:
     - name: cleanup
       image: alpine:3.14
